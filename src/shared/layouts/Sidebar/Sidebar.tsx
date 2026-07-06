@@ -16,7 +16,7 @@ const navItems = [
 
 export function Sidebar() {
   return (
-    <aside className="flex w-16 flex-col items-center gap-3 py-6">
+    <aside className="fixed top-0 ltr:left-0 rtl:right-0 z-50 flex h-screen w-16 flex-col items-center gap-3 py-6 bg-white">
       {navItems.map(({ icon: Icon, label }, index) => {
         const isActive = index === 0
 

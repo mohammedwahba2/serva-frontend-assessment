@@ -1,9 +1,75 @@
 {
   "welcome": "مرحبًا بعودتك، {{name}}",
+  "welcomeSubtitle": "لمحة فورية على أسطولك اليوم",
   "language": "العربية",
   "companySubtitle": "دي إس رنت لتأجير السيارات",
   "defaultUserName": "محمد وهبة",
   "settings": "الإعدادات",
   "profile": "الملف الشخصي",
-  "logout": "تسجيل الخروج"
+  "logout": "تسجيل الخروج",
+  "dashboard": {
+    "stats": {
+      "comparedToLastMonth": "عن الشهر الماضي",
+      "viewAll": "عرض الكل",
+      "byStatus": "{{title}} حسب الحالة",
+
+      "drivers": {
+        "title": "السائقون",
+        "subtitle": "إجمالي السائقين"
+      },
+      "rides": {
+        "title": "الرحلات",
+        "subtitle": "هذا الشهر"
+      },
+      "contracts": {
+        "title": "العقود",
+        "subtitle": "إجمالي العقود"
+      },
+      "vehicles": {
+        "title": "المركبات",
+        "subtitle": "إجمالي الأسطول"
+      }
+    },
+
+    "status": {
+      "active": "نشط",
+      "onLeave": "إجازة",
+      "suspended": "موقوف",
+      "completed": "مكتملة",
+      "inProgress": "جارية",
+      "cancelled": "ملغية",
+      "activeContract": "سارية",
+      "expiringSoon": "منتهية قريبًا",
+      "expired": "منتهية",
+      "available": "متاحة",
+      "onContract": "في عقد",
+      "onTrip": "في رحلة",
+      "reserved": "محجوزة",
+      "outOfService": "خارج الخدمة"
+    }
+  },
+  "revenue": {
+    "title": "أداء الإيرادات",
+    "subtitle": "إيرادات الرحلات والعقود شهريا",
+    "totalLabel": "إجمالي إيرادات الشهر",
+    "changeLabel": "مقارنةً بالشهر الماضي",
+    "previousPeriod": "الشهر السابق",
+    "currency": "رس",
+    "series": {
+      "rideRevenue": "إيرادات الرحلات",
+      "contractRevenue": "إيرادات العقود"
+    },
+    "period": {
+      "label": "عرض",
+      "monthly": "شهري",
+      "weekly": "أسبوعي",
+      "yearly": "سنوي"
+    },
+    "branch": {
+      "label": "الفرع",
+      "all": "جميع الفروع",
+      "riyadh": "الرياض",
+      "jeddah": "جدة"
+    }
+  }
 }

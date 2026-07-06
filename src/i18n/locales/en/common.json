@@ -1,9 +1,75 @@
 {
   "welcome": "Welcome Back, {{name}}",
+  "welcomeSubtitle": "A quick look at your fleet today",
   "language": "English",
   "companySubtitle": "DS Rent Car Rental",
   "defaultUserName": "Mohamed Wahba",
   "settings": "Settings",
   "profile": "Profile",
-  "logout": "Logout"
+  "logout": "Logout",
+  "dashboard": {
+    "stats": {
+      "comparedToLastMonth": "vs last month",
+      "viewAll": "View All",
+      "byStatus": "{{title}} by Status",
+
+      "drivers": {
+        "title": "Drivers",
+        "subtitle": "Total Drivers"
+      },
+      "rides": {
+        "title": "Rides",
+        "subtitle": "This Month"
+      },
+      "contracts": {
+        "title": "Contracts",
+        "subtitle": "Total Contracts"
+      },
+      "vehicles": {
+        "title": "Vehicles",
+        "subtitle": "Total Fleet"
+      }
+    },
+
+    "status": {
+      "active": "Active",
+      "onLeave": "On Leave",
+      "suspended": "Suspended",
+      "completed": "Completed",
+      "inProgress": "In Progress",
+      "cancelled": "Cancelled",
+      "activeContract": "Active",
+      "expiringSoon": "Expiring Soon",
+      "expired": "Expired",
+      "available": "Available",
+      "onContract": "On Contract",
+      "onTrip": "On Trip",
+      "reserved": "Reserved",
+      "outOfService": "Out of Service"
+    }
+  },
+  "revenue": {
+    "title": "Revenue",
+    "subtitle": "Monthly Ride and Contract Revenues",
+    "totalLabel": "Total Revenue This Month",
+    "changeLabel": "vs last month",
+    "previousPeriod": "Previous Month",
+    "currency": "SAR",
+    "series": {
+      "rideRevenue": "Ride Revenue",
+      "contractRevenue": "Contract Revenue"
+    },
+    "period": {
+      "label": "View",
+      "monthly": "Monthly",
+      "weekly": "Weekly",
+      "yearly": "Yearly"
+    },
+    "branch": {
+      "label": "Branch",
+      "all": "All Branches",
+      "riyadh": "Riyadh",
+      "jeddah": "Jeddah"
+    }
+  }
 }
