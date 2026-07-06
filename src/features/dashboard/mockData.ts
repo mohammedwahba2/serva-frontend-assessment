@@ -1,5 +1,23 @@
-import type { DrawerItem, OverviewStat, RidesContractsTrend, VehicleUsagePerformance, VehicleUsageSegment, ActivityItem } from './types'
-import type { RevenuePerformance } from './types';
+import type {
+  DrawerItem,
+  OverviewStat,
+  RidesContractsTrend,
+  VehicleUsagePerformance,
+  VehicleUsageSegment,
+  ActivityItem,
+  RevenuePerformance,
+  RevenueDataPoint,
+  RevenueQueryParams,
+} from './types'
+
+
+interface RevenueBucket {
+  key: string       
+  monthIndex: number 
+  rideRevenue: number
+  contractRevenue: number
+}
+
 export const overviewStats: OverviewStat[] = [
   {
     id: 'drivers',
@@ -53,26 +71,6 @@ export const overviewStats: OverviewStat[] = [
   },
 ]
 
-export const revenuePerformance: RevenuePerformance = {
-  total: 84000,
-  changePercentage: 15,
-  changeDirection: 'up',
-  currentPeriodLabel: 'months.july',
-  data: [
-    { month: 'months.december', rideRevenue: 15000, contractRevenue: 22000, isFuture: false },
-    { month: 'months.november', rideRevenue: 14000, contractRevenue: 21000, isFuture: false },
-    { month: 'months.october', rideRevenue: 16000, contractRevenue: 23000, isFuture: false },
-    { month: 'months.september', rideRevenue: 10000, contractRevenue: 12000, isFuture: false },
-    { month: 'months.august', rideRevenue: 8000, contractRevenue: 9000, isFuture: false },
-    { month: 'months.july', rideRevenue: 9000, contractRevenue: 10000, isFuture: false },
-    { month: 'months.june', rideRevenue: 34000, contractRevenue: 48000, isFuture: false },
-    { month: 'months.may', rideRevenue: 36000, contractRevenue: 52000, isFuture: false },
-    { month: 'months.april', rideRevenue: 32000, contractRevenue: 46000, isFuture: false },
-    { month: 'months.march', rideRevenue: 28000, contractRevenue: 40000, isFuture: false },
-    { month: 'months.february', rideRevenue: 24000, contractRevenue: 35000, isFuture: false },
-    { month: 'months.january', rideRevenue: 20000, contractRevenue: 30000, isFuture: false },
-  ],
-}
 
 
 export const statItemsMock: Record<OverviewStat['id'], DrawerItem[]> = {
@@ -210,3 +208,90 @@ export const recentActivity: ActivityItem[] = [
     timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
   },
 ]
+
+const MONTHLY_BUCKETS: RevenueBucket[] = [
+  { key: 'months.december', monthIndex: 11, rideRevenue: 15000, contractRevenue: 22000 },
+  { key: 'months.november', monthIndex: 10, rideRevenue: 14000, contractRevenue: 21000 },
+  { key: 'months.october', monthIndex: 9, rideRevenue: 16000, contractRevenue: 23000 },
+  { key: 'months.september', monthIndex: 8, rideRevenue: 10000, contractRevenue: 12000 },
+  { key: 'months.august', monthIndex: 7, rideRevenue: 8000, contractRevenue: 9000 },
+  { key: 'months.july', monthIndex: 6, rideRevenue: 40000, contractRevenue: 44000 },
+  { key: 'months.june', monthIndex: 5, rideRevenue: 34000, contractRevenue: 48000 },
+  { key: 'months.may', monthIndex: 4, rideRevenue: 36000, contractRevenue: 52000 },
+  { key: 'months.april', monthIndex: 3, rideRevenue: 32000, contractRevenue: 46000 },
+  { key: 'months.march', monthIndex: 2, rideRevenue: 28000, contractRevenue: 40000 },
+  { key: 'months.february', monthIndex: 1, rideRevenue: 24000, contractRevenue: 35000 },
+  { key: 'months.january', monthIndex: 0, rideRevenue: 20000, contractRevenue: 30000 },
+]
+
+const WEEKLY_BUCKETS: RevenueBucket[] = [
+  { key: 'weeks.w1', monthIndex: 0, rideRevenue: 5200, contractRevenue: 6800 },
+  { key: 'weeks.w2', monthIndex: 1, rideRevenue: 6100, contractRevenue: 7200 },
+  { key: 'weeks.w3', monthIndex: 2, rideRevenue: 5800, contractRevenue: 7000 },
+  { key: 'weeks.w4', monthIndex: 3, rideRevenue: 6700, contractRevenue: 8100 },
+  { key: 'weeks.w5', monthIndex: 4, rideRevenue: 7200, contractRevenue: 8600 },
+  { key: 'weeks.w6', monthIndex: 5, rideRevenue: 6900, contractRevenue: 8300 },
+  { key: 'weeks.w7', monthIndex: 6, rideRevenue: 4300, contractRevenue: 5100 },
+  { key: 'weeks.w8', monthIndex: 7, rideRevenue: 3900, contractRevenue: 4700 },
+]
+
+const YEARLY_BUCKETS: RevenueBucket[] = [
+  { key: 'years.y2023', monthIndex: 0, rideRevenue: 210000, contractRevenue: 280000 },
+  { key: 'years.y2024', monthIndex: 1, rideRevenue: 260000, contractRevenue: 340000 },
+  { key: 'years.y2025', monthIndex: 2, rideRevenue: 310000, contractRevenue: 400000 },
+  { key: 'years.y2026', monthIndex: 3, rideRevenue: 190000, contractRevenue: 230000 },
+  { key: 'years.y2027', monthIndex: 4, rideRevenue: 90000, contractRevenue: 110000 },
+]
+
+const CURRENT_CURSOR: Record<RevenueQueryParams['period'], number> = {
+  monthly: 6,
+  weekly: 6,
+  yearly: 3,
+}
+
+const BRANCH_FACTORS: Record<RevenueQueryParams['branch'], number> = {
+  all: 1,
+  riyadh: 0.55,
+  jeddah: 0.32,
+}
+
+function buildRevenueSeries(
+  buckets: RevenueBucket[],
+  cursor: number,
+  branchFactor: number,
+): RevenuePerformance {
+  const scale = (n: number) => Math.round((n * branchFactor) / 10) * 10
+
+  const data: RevenueDataPoint[] = buckets.map((b) => ({
+    month: b.key,
+    rideRevenue: scale(b.rideRevenue),
+    contractRevenue: scale(b.contractRevenue),
+    isFuture: b.monthIndex > cursor,
+  }))
+
+  const current = buckets.find((b) => b.monthIndex === cursor) ?? buckets[0]
+  const previous = buckets.find((b) => b.monthIndex === cursor - 1)
+
+  const currentTotal = scale(current.rideRevenue + current.contractRevenue)
+  const previousTotal = previous ? scale(previous.rideRevenue + previous.contractRevenue) : null
+
+  const rawChange = previousTotal ? ((currentTotal - previousTotal) / previousTotal) * 100 : 0
+
+  return {
+    total: currentTotal,
+    changePercentage: Math.round(Math.abs(rawChange)),
+    changeDirection: rawChange >= 0 ? 'up' : 'down',
+    currentPeriodLabel: current.key,
+    data,
+  }
+}
+
+export function getRevenuePerformance({ period, branch, offset }: RevenueQueryParams): RevenuePerformance {
+  const buckets =
+    period === 'monthly' ? MONTHLY_BUCKETS : period === 'weekly' ? WEEKLY_BUCKETS : YEARLY_BUCKETS
+
+  const defaultCursor = CURRENT_CURSOR[period]
+  const cursor = Math.min(Math.max(defaultCursor + offset, 0), buckets.length - 1)
+
+  return buildRevenueSeries(buckets, cursor, BRANCH_FACTORS[branch])
+}

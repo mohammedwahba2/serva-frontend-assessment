@@ -1,24 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Card, Select, MenuItem } from '@mui/material'
+import { Card, Select, MenuItem, CircularProgress } from '@mui/material'
 import { BarChart, Bar, Cell, XAxis, ResponsiveContainer, Tooltip, Legend } from 'recharts'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp'
-import type { RevenuePerformance } from '../../types'
+import TrendingDownIcon from '@mui/icons-material/TrendingDown'
+import type { BranchValue, PeriodValue } from '../../types'
+import { useGetRevenuePerformanceQuery } from '../../api/dashboardApi'
 import { RevenueTooltip } from './RevenueTooltip'
-
-
-interface RevenueChartProps {
-  data: RevenuePerformance
-  onPeriodChange?: (period: string) => void
-  onBranchChange?: (branch: string) => void
-  onNavigatePrev?: () => void
-  onNavigateNext?: () => void
-}
-
-
 
 const seriesConfig = {
   rideRevenue: { labelKey: 'revenue.series.rideRevenue', color: '#1A1A1A' },
@@ -39,57 +30,20 @@ const branchOptions = [
   { value: 'jeddah', labelKey: 'revenue.branch.jeddah' },
 ] as const
 
-
-
 const mutedColor = '#D9D3C7'
 
-export function RevenueChart({
-  data,
-  onPeriodChange,
-  onBranchChange,
-  onNavigatePrev,
-  onNavigateNext,
-}: RevenueChartProps) {
+export function RevenueChart() {
   const { t, i18n } = useTranslation()
-  const [period, setPeriod] = useState<string>('monthly')
-  const [branch, setBranch] = useState<string>('all')
+  const [period, setPeriod] = useState<PeriodValue>('monthly')
+  const [branch, setBranch] = useState<BranchValue>('all')
+  const [offset, setOffset] = useState(0)
 
+  // لما يغيّر الفترة أو الفرع، منطقي نرجع لـ "الحالي" بدل ما نفضل تايهين في الأوفست القديم
+  useEffect(() => {
+    setOffset(0)
+  }, [period, branch])
 
-  const filterSx = {
-  fontSize: 14,
-  borderRadius: '6px',
-  bgcolor: '#FFFFFF',
-  '.MuiOutlinedInput-notchedOutline': { borderColor: '#E0DACF' },
-  '& .MuiSelect-select': { py: 0.7, px: 1.5 },
-}
-
-const menuProps = {
-  anchorOrigin: {
-    vertical: 'bottom' as const,
-    horizontal: 'right' as const,
-  },
-  transformOrigin: {
-    vertical: 'top' as const,
-    horizontal: 'right' as const,
-  },
-  slotProps: {
-    paper: {
-    dir: i18n.dir(),
-      sx: {
-        bgcolor: '#FFFFFF',
-        borderRadius: '12px',
-        mt: 0.5,
-        minWidth: 180,
-        boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
-      },
-    },
-  },
-  MenuListProps: {
-    sx: { py: 0.5 },
-  },
-}
-
-
+  const { data, isLoading } = useGetRevenuePerformanceQuery({ period, branch, offset })
 
   const [visibleSeries, setVisibleSeries] = useState<Record<SeriesKey, boolean>>({
     rideRevenue: true,
@@ -105,19 +59,37 @@ const menuProps = {
     })
   }
 
-  const handlePeriodChange = (value: string) => {
-    setPeriod(value)
-    onPeriodChange?.(value)
+  const filterSx = {
+    fontSize: 14,
+    borderRadius: '6px',
+    bgcolor: '#FFFFFF',
+    '.MuiOutlinedInput-notchedOutline': { borderColor: '#E0DACF' },
+    '& .MuiSelect-select': { py: 0.7, px: 1.5 },
   }
 
-  const handleBranchChange = (value: string) => {
-    setBranch(value)
-    onBranchChange?.(value)
+  const menuProps = {
+    anchorOrigin: { vertical: 'bottom' as const, horizontal: 'right' as const },
+    transformOrigin: { vertical: 'top' as const, horizontal: 'right' as const },
+    slotProps: {
+      paper: {
+        dir: i18n.dir(),
+        sx: { bgcolor: '#FFFFFF', borderRadius: '12px', mt: 0.5, minWidth: 180, boxShadow: '0 4px 16px rgba(0,0,0,0.08)' },
+      },
+    },
+    MenuListProps: { sx: { py: 0.5 } },
   }
-const rideRadius: [number, number, number, number] =
-  visibleSeries.contractRevenue
-    ? [0, 0, 0, 0]
-    : [6, 6, 0, 0];
+
+  const rideRadius: [number, number, number, number] = visibleSeries.contractRevenue ? [0, 0, 0, 0] : [6, 6, 0, 0]
+
+  if (isLoading || !data) {
+    return (
+      <Card sx={{ borderRadius: '16px', bgcolor: '#F0EBE3', boxShadow: 'none', p: 3, minHeight: 340, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <CircularProgress size={28} />
+      </Card>
+    )
+  }
+
+  const isUp = data.changeDirection === 'up'
 
   return (
     <Card sx={{ borderRadius: '16px', bgcolor: '#F0EBE3', boxShadow: 'none', p: 3 }}>
@@ -128,42 +100,33 @@ const rideRadius: [number, number, number, number] =
         </div>
 
         <div className="flex items-center gap-2 mb-4">
-            <Select
+          <Select
             value={branch}
-            onChange={(e) => handleBranchChange(e.target.value)}
+            onChange={(e) => setBranch(e.target.value as BranchValue)}
             IconComponent={KeyboardArrowDownIcon}
             sx={filterSx}
             MenuProps={menuProps}
             renderValue={(value) =>
-                `${t('revenue.branch.label')}: ${t(
-                branchOptions.find((o) => o.value === value)?.labelKey ?? branchOptions[0].labelKey
-                )}`
+              `${t('revenue.branch.label')}: ${t(branchOptions.find((o) => o.value === value)?.labelKey ?? branchOptions[0].labelKey)}`
             }
-            >
+          >
             {branchOptions.map((opt) => (
-                <MenuItem key={opt.value} value={opt.value}>
-                {t(opt.labelKey)}
-                </MenuItem>
+              <MenuItem key={opt.value} value={opt.value}>{t(opt.labelKey)}</MenuItem>
             ))}
-            </Select>
+          </Select>
 
           <Select
-
             value={period}
-            onChange={(e) => handlePeriodChange(e.target.value)}
+            onChange={(e) => setPeriod(e.target.value as PeriodValue)}
             IconComponent={KeyboardArrowDownIcon}
             sx={filterSx}
             MenuProps={menuProps}
             renderValue={(value) =>
-              `${t('revenue.period.label')}: ${t(
-                periodOptions.find((o) => o.value === value)?.labelKey ?? periodOptions[0].labelKey
-              )}`
+              `${t('revenue.period.label')}: ${t(periodOptions.find((o) => o.value === value)?.labelKey ?? periodOptions[0].labelKey)}`
             }
           >
             {periodOptions.map((opt) => (
-              <MenuItem key={opt.value} value={opt.value}>
-                {t(opt.labelKey)}
-              </MenuItem>
+              <MenuItem key={opt.value} value={opt.value}>{t(opt.labelKey)}</MenuItem>
             ))}
           </Select>
         </div>
@@ -172,14 +135,14 @@ const rideRadius: [number, number, number, number] =
       <div className="flex items-center justify-between mb-6">
         <button
           type="button"
-          onClick={onNavigatePrev}
+          onClick={() => setOffset((o) => o - 1)}
           className="flex items-center gap-2 text-xs text-gray-500 cursor-pointer bg-transparent border-none"
         >
-         <div className="flex items-center justify-center w-8 h-8 rounded-full  border border-gray-300 ">
-                <KeyboardArrowLeftIcon sx={{ fontSize: 16 }} className="rtl:rotate-180" />
-            </div>
+          <div className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300">
+            <KeyboardArrowLeftIcon sx={{ fontSize: 16 }} className="rtl:rotate-180" />
+          </div>
           <div className="flex flex-col items-start">
-            <span className="font-medium  text-sm text-brand-dark">{t(data.currentPeriodLabel)}</span>
+            <span className="font-medium text-sm text-brand-dark">{t(data.currentPeriodLabel)}</span>
             <span>{t('revenue.previousPeriod')}</span>
           </div>
         </button>
@@ -191,8 +154,8 @@ const rideRadius: [number, number, number, number] =
               {data.total.toLocaleString()} {t('revenue.currency')}
             </span>
           </div>
-          <span className="flex items-center gap-0.5 text-xs text-green-600 justify-center mt-2">
-            <TrendingUpIcon sx={{ fontSize: 12 }} />
+          <span className={`flex items-center gap-0.5 text-xs justify-center mt-2 ${isUp ? 'text-green-600' : 'text-red-600'}`}>
+            {isUp ? <TrendingUpIcon sx={{ fontSize: 12 }} /> : <TrendingDownIcon sx={{ fontSize: 12 }} />}
             <span dir="ltr">%{data.changePercentage}</span>
             <span>{t('revenue.changeLabel')}</span>
           </span>
@@ -200,101 +163,51 @@ const rideRadius: [number, number, number, number] =
 
         <button
           type="button"
-          onClick={onNavigateNext}
-          className="flex items-center justify-center w-8 h-8 rounded-full  border border-gray-300 "
+          onClick={() => setOffset((o) => o + 1)}
+          className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300"
         >
-        <KeyboardArrowRightIcon sx={{ fontSize: 16 }} className="rtl:rotate-180" />
+          <KeyboardArrowRightIcon sx={{ fontSize: 16 }} className="rtl:rotate-180" />
         </button>
       </div>
 
       <ResponsiveContainer width="100%" height={260}>
         <BarChart data={data.data} barCategoryGap="30%">
-        <XAxis
-          dataKey="month"
-          tickFormatter={(value) => t(value)}
-          tick={{ fontSize: 12, fill: '#9E9E9E' }}
-          axisLine={false}
-          tickLine={false}
-          interval={0}
-        />
-        <Tooltip content={<RevenueTooltip />} cursor={{ fill: 'transparent' }} />
-<Bar
-  dataKey="rideRevenue"
-  stackId="revenue"
-  hide={!visibleSeries.rideRevenue}
-  fill={seriesConfig.rideRevenue.color}
-  radius={rideRadius}
-  name={t(seriesConfig.rideRevenue.labelKey)}
->
-  {data.data.map((entry, index) => (
-    <Cell
-      key={index}
-      fill={entry.isFuture ? mutedColor : seriesConfig.rideRevenue.color}
-    />
-  ))}
-</Bar>
-
-<Bar
-  dataKey="contractRevenue"
-  stackId="revenue"
-  hide={!visibleSeries.contractRevenue}
-  fill={seriesConfig.contractRevenue.color}
-  radius={[6, 6, 0, 0]}
-  name={t(seriesConfig.contractRevenue.labelKey)}
->
-  {data.data.map((entry, index) => (
-    <Cell
-      key={index}
-      fill={entry.isFuture ? mutedColor : seriesConfig.contractRevenue.color}
-    />
-  ))}
-</Bar>
-<Legend
-  verticalAlign="bottom"
-  content={({ payload }) => (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        gap: 20,
-      }}
-    >
-      {payload?.map((entry: any) => (
-        <div
-          key={entry.dataKey}
-          onClick={() => toggleSeries(entry.dataKey)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            cursor: 'pointer',
-            opacity: visibleSeries[entry.dataKey] ? 1 : 0.4,
-            gap: 6,
-          }}
-        >
-          <span
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: '50%',
-              background: entry.color,
-              display: 'inline-block',
-              flexShrink: 0,
-            }}
+          <XAxis
+            dataKey="month"
+            tickFormatter={(value) => t(value)}
+            tick={{ fontSize: 12, fill: '#9E9E9E' }}
+            axisLine={false}
+            tickLine={false}
+            interval={0}
           />
-
-          <span
-            style={{
-              color: '#4B5563',
-              fontSize: 12,
-            }}
-          >
-            {entry.value}
-          </span>
-        </div>
-      ))}
-    </div>
-  )}
-/>
+          <Tooltip content={<RevenueTooltip />} cursor={{ fill: 'transparent' }} />
+          <Bar dataKey="rideRevenue" stackId="revenue" hide={!visibleSeries.rideRevenue} fill={seriesConfig.rideRevenue.color} radius={rideRadius} name={t(seriesConfig.rideRevenue.labelKey)}>
+            {data.data.map((entry, index) => (
+              <Cell key={index} fill={entry.isFuture ? mutedColor : seriesConfig.rideRevenue.color} />
+            ))}
+          </Bar>
+          <Bar dataKey="contractRevenue" stackId="revenue" hide={!visibleSeries.contractRevenue} fill={seriesConfig.contractRevenue.color} radius={[6, 6, 0, 0]} name={t(seriesConfig.contractRevenue.labelKey)}>
+            {data.data.map((entry, index) => (
+              <Cell key={index} fill={entry.isFuture ? mutedColor : seriesConfig.contractRevenue.color} />
+            ))}
+          </Bar>
+          <Legend
+            verticalAlign="bottom"
+            content={({ payload }) => (
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 20 }}>
+                {payload?.map((entry: any) => (
+                  <div
+                    key={entry.dataKey}
+                    onClick={() => toggleSeries(entry.dataKey)}
+                    style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', opacity: visibleSeries[entry.dataKey as SeriesKey] ? 1 : 0.4, gap: 6 }}
+                  >
+                    <span style={{ width: 10, height: 10, borderRadius: '50%', background: entry.color, display: 'inline-block', flexShrink: 0 }} />
+                    <span style={{ color: '#4B5563', fontSize: 12 }}>{entry.value}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          />
         </BarChart>
       </ResponsiveContainer>
     </Card>

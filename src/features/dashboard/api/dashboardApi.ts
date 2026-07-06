@@ -3,17 +3,18 @@ import type {
   DrawerItem,
   OverviewStat,
   RevenuePerformance,
+  RevenueQueryParams,
   RidesContractsTrend,
   VehicleUsagePerformance,
   ActivityItem,
 } from '../types'
 import {
   overviewStats,
-  revenuePerformance,
   statItemsMock,
   ridesContractsTrend,
   vehicleUsage,
   recentActivity,
+  getRevenuePerformance,
 } from '../mockData'
 
 export const dashboardApi = createApi({
@@ -26,10 +27,10 @@ export const dashboardApi = createApi({
         return { data: overviewStats }
       },
     }),
-    getRevenuePerformance: builder.query<RevenuePerformance, void>({
-      queryFn: async () => {
+    getRevenuePerformance: builder.query<RevenuePerformance, RevenueQueryParams>({
+      queryFn: async (params) => {
         await new Promise((resolve) => setTimeout(resolve, 300))
-        return { data: revenuePerformance }
+        return { data: getRevenuePerformance(params) }
       },
     }),
     getStatItems: builder.query<DrawerItem[], OverviewStat['id']>({

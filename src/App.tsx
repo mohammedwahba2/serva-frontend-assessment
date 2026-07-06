@@ -8,7 +8,6 @@ import { Sidebar } from './shared/layouts/Sidebar/Sidebar'
 import { Header } from './features/dashboard/components/Header'
 import {
   useGetOverviewStatsQuery,
-  useGetRevenuePerformanceQuery,
   useGetRidesContractsTrendQuery,
   useGetVehicleUsageQuery,
 } from '@/features/dashboard/api/dashboardApi'
@@ -37,7 +36,6 @@ function App() {
   }
 
   const { data } = useGetOverviewStatsQuery()
-  const { data: revenueData } = useGetRevenuePerformanceQuery()
 const { data: trendData } = useGetRidesContractsTrendQuery()
 const { data: usageData } = useGetVehicleUsageQuery()
 
@@ -75,11 +73,9 @@ const { data: usageData } = useGetVehicleUsageQuery()
               ))}
             </div>
 
-            {revenueData && (
               <div className="px-6 mt-4">
-                <RevenueChart data={revenueData} />
-              </div>
-            )}
+            <RevenueChart />
+          </div>
             {trendData && usageData && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 px-6 mt-4">
             <VehicleUsageChart data={usageData} />
