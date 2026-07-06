@@ -14,7 +14,7 @@ export const getTheme = (direction: 'ltr' | 'rtl') =>
         main: '#1A1A1A',
       },
       background: {
-        default: '#F5F1EC',
+        default: '#fff',
         paper: '#EDE7DE',
       },
       text: {

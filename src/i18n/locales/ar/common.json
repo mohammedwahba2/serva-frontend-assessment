@@ -88,5 +88,70 @@
     "viewTrip": "عرض الرحلة",
     "renew": "تجديد"
   }
-}
+},
+"trend": {
+  "title": "اتجاه الرحلات والعقود",
+  "subtitle": "إجمالي الحجم عبر الزمن",
+  "totalLabel": "الإجمالي الكلي لهذه الفترة",
+  "period": { "label": "عرض", "monthly": "شهري", "weekly": "أسبوعي", "yearly": "سنوي" },
+  "branch": { "label": "الفرع", "all": "جميع الفروع" },
+  "series": {
+    "rides": "الرحلات",
+    "contracts": "العقود"
+  }
+},
+"usage": {
+  "title": "استخدام المركبات",
+  "subtitle": "الاستخدام عبر الأسطول بمرور الوقت",
+  "totalLabel": "إجمالي الاستخدام لهذه الفترة",
+  "period": { "label": "عرض", "monthly": "شهري", "weekly": "أسبوعي", "yearly": "سنوي" },
+  "branch": {
+    "label": "الفرع",
+    "all": "جميع الفروع",
+    "riyadh": "الرياض",
+    "jeddah": "جدة",
+    "dammam": "الدمام",
+    "mecca": "مكة",
+    "medina": "المدينة",
+    "other": "أخرى"
+  },
+  "moreSeries": "+{{count}}"
+},
+"activity": {
+  "title": "النشاط الأخير",
+  "viewAll": "عرض الكل",
+  "loading": "جارِ تحميل النشاط...",
+  "types": {
+    "contractCreated": "تم إنشاء عقد جديد",
+    "paymentReceived": "تم استلام دفعة",
+    "rideCompleted": "اكتملت رحلة",
+    "vehicleReturned": "تم إرجاع مركبة",
+    "contractExpiring": "عقد ينتهي قريبًا"
+  },
+  "status": {
+    "completed": "مكتمل",
+    "pending": "معلق"
+  },
+  "time": {
+    "justNow": "الآن",
+    "minutesAgo": "قبل {{count}} د",
+    "hoursAgo": "قبل {{count}} س",
+    "yesterday": "أمس",
+    "daysAgo": "قبل {{count}} يوم"
+  }
+},
+  "months": {
+    "january": "يناير",
+    "february": "فبراير",
+    "march": "مارس",
+    "april": "أبريل",
+    "may": "مايو",
+    "june": "يونيو",
+    "july": "يوليو",
+    "august": "أغسطس",
+    "september": "سبتمبر",
+    "october": "أكتوبر",
+    "november": "نوفمبر",
+    "december": "ديسمبر"
+  }
 }

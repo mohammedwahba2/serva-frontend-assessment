@@ -9,6 +9,8 @@ import { Header } from './features/dashboard/components/Header'
 import {
   useGetOverviewStatsQuery,
   useGetRevenuePerformanceQuery,
+  useGetRidesContractsTrendQuery,
+  useGetVehicleUsageQuery,
 } from '@/features/dashboard/api/dashboardApi'
 import { StatCard } from '@/features/dashboard/components/StatCard/StatCard'
 import { StatusDrawer } from '@/features/dashboard/components/StatusDrawer'
@@ -19,6 +21,9 @@ import CommuteOutlinedIcon from '@mui/icons-material/CommuteOutlined'
 import { WelcomeBanner } from './features/dashboard/components/WelcomeBanner/WelcomeBanner'
 import { RevenueChart } from './features/dashboard/components/RevenueChart/RevenueChart'
 import type { OverviewStat } from '@/features/dashboard/types'
+import { TrendChart } from '@/features/dashboard/components/TrendChart/TrendChart'
+import { VehicleUsageChart } from '@/features/dashboard/components/VehicleUsageChart/VehicleUsageChart'
+import { RecentActivity } from '@/features/dashboard/components/RecentActivity'
 
 function App() {
   const { t, i18n } = useTranslation()
@@ -33,6 +38,8 @@ function App() {
 
   const { data } = useGetOverviewStatsQuery()
   const { data: revenueData } = useGetRevenuePerformanceQuery()
+const { data: trendData } = useGetRidesContractsTrendQuery()
+const { data: usageData } = useGetVehicleUsageQuery()
 
   const [drawerState, setDrawerState] = useState<{
     statId: OverviewStat['id']
@@ -51,7 +58,7 @@ function App() {
     <CacheProvider value={isRtl ? cacheRtl : cacheLtr}>
       <ThemeProvider theme={getTheme(isRtl ? 'rtl' : 'ltr')}>
         <CssBaseline />
-        <div dir={isRtl ? 'rtl' : 'ltr'} className="bg-brand-bg min-h-screen">
+        <div dir={isRtl ? 'rtl' : 'ltr'} className="min-h-screen">
           <Sidebar />
           <div className="flex-1 rtl:mr-16 ltr:ml-16">
             <Header userName={t('defaultUserName')} />
@@ -73,6 +80,15 @@ function App() {
                 <RevenueChart data={revenueData} />
               </div>
             )}
+            {trendData && usageData && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 px-6 mt-4">
+            <VehicleUsageChart data={usageData} />
+            <TrendChart data={trendData} />
+          </div>
+        )}
+        <div className="px-6 mt-4 mb-6">
+        <RecentActivity />
+      </div>
           </div>
         </div>
 

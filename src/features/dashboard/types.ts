@@ -49,3 +49,48 @@ export interface DrawerItem {
   statusKey: string
   statusTone: 'success' | 'info' | 'warning' | 'danger' | 'neutral'
 }
+
+export interface TrendDataPoint {
+  month: string
+  rides: number
+  contracts: number
+}
+
+export interface RidesContractsTrend {
+  total: number
+  data: TrendDataPoint[]
+}
+
+export interface VehicleUsageSegment {
+  key: string
+  labelKey: string
+  color: string
+}
+
+export interface VehicleUsageDataPoint {
+  month: string
+  values: Record<string, number>
+}
+
+export interface VehicleUsagePerformance {
+  utilizationPercentage: number
+  segments: VehicleUsageSegment[]
+  data: VehicleUsageDataPoint[]
+}
+
+export type ActivityType =
+  | 'contractCreated'
+  | 'paymentReceived'
+  | 'rideCompleted'
+  | 'vehicleReturned'
+  | 'contractExpiring'
+
+export interface ActivityItem {
+  id: string
+  type: ActivityType
+  titleKey: string
+  detail: string
+  statusKey: string
+  statusTone: 'success' | 'info' | 'warning' | 'danger' | 'neutral'
+  timestamp: string 
+}

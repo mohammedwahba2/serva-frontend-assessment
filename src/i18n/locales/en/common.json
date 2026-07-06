@@ -88,5 +88,72 @@
     "viewTrip": "View Trip",
     "renew": "Renew"
   }
-}
+},
+"trend": {
+  "title": "Rides & Contracts Trend",
+  "subtitle": "Total volume over time",
+  "totalLabel": "Total for this period",
+  "period": { "label": "View", "monthly": "Monthly", "weekly": "Weekly", "yearly": "Yearly" },
+  "branch": { "label": "Branch", "all": "All Branches" },
+  "series": {
+    "rides": "Rides",
+    "contracts": "Contracts"
+  }
+},
+"usage": {
+  "title": "Vehicle Usage",
+  "subtitle": "Usage across the fleet over time",
+  "totalLabel": "Total usage for this period",
+  "period": { "label": "View", "monthly": "Monthly", "weekly": "Weekly", "yearly": "Yearly" },
+  "branch": {
+    "label": "Branch",
+    "all": "All Branches",
+    "riyadh": "Riyadh",
+    "jeddah": "Jeddah",
+    "dammam": "Dammam",
+    "mecca": "Mecca",
+    "medina": "Medina",
+    "other": "Other"
+  },
+  "moreSeries": "+{{count}}"
+},
+"activity": {
+  "title": "Recent Activity",
+  "viewAll": "View All",
+  "loading": "Loading activity...",
+  "types": {
+    "contractCreated": "New contract created",
+    "paymentReceived": "Payment received",
+    "rideCompleted": "Ride completed",
+    "vehicleReturned": "Vehicle returned",
+    "contractExpiring": "Contract expiring soon"
+  },
+  "status": {
+    "completed": "Completed",
+    "pending": "Pending"
+  },
+  "time": {
+    "justNow": "Just now",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago",
+    "yesterday": "Yesterday",
+    "daysAgo": "{{count}}d ago"
+  }
+},
+
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  }
+
 }

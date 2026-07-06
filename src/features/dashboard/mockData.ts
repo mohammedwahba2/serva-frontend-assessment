@@ -1,4 +1,4 @@
-import type { DrawerItem, OverviewStat } from './types'
+import type { DrawerItem, OverviewStat, RidesContractsTrend, VehicleUsagePerformance, VehicleUsageSegment, ActivityItem } from './types'
 import type { RevenuePerformance } from './types';
 export const overviewStats: OverviewStat[] = [
   {
@@ -57,20 +57,20 @@ export const revenuePerformance: RevenuePerformance = {
   total: 84000,
   changePercentage: 15,
   changeDirection: 'up',
-  currentPeriodLabel: 'يوليو',
+  currentPeriodLabel: 'months.july',
   data: [
-    { month: 'ديسمبر', rideRevenue: 15000, contractRevenue: 22000, isFuture: false },
-    { month: 'نوفمبر', rideRevenue: 14000, contractRevenue: 21000, isFuture: false },
-    { month: 'أكتوبر', rideRevenue: 16000, contractRevenue: 23000, isFuture: false },
-    { month: 'سبتمبر', rideRevenue: 10000, contractRevenue: 12000, isFuture: false },
-    { month: 'أغسطس', rideRevenue: 8000, contractRevenue: 9000, isFuture: false },
-    { month: 'يوليو', rideRevenue: 9000, contractRevenue: 10000, isFuture: false },
-    { month: 'يونيو', rideRevenue: 34000, contractRevenue: 48000, isFuture: false },
-    { month: 'مايو', rideRevenue: 36000, contractRevenue: 52000, isFuture: false },
-    { month: 'أبريل', rideRevenue: 32000, contractRevenue: 46000, isFuture: false },
-    { month: 'مارس', rideRevenue: 28000, contractRevenue: 40000, isFuture: false },
-    { month: 'فبراير', rideRevenue: 24000, contractRevenue: 35000, isFuture: false },
-    { month: 'يناير', rideRevenue: 20000, contractRevenue: 30000, isFuture: false },
+    { month: 'months.december', rideRevenue: 15000, contractRevenue: 22000, isFuture: false },
+    { month: 'months.november', rideRevenue: 14000, contractRevenue: 21000, isFuture: false },
+    { month: 'months.october', rideRevenue: 16000, contractRevenue: 23000, isFuture: false },
+    { month: 'months.september', rideRevenue: 10000, contractRevenue: 12000, isFuture: false },
+    { month: 'months.august', rideRevenue: 8000, contractRevenue: 9000, isFuture: false },
+    { month: 'months.july', rideRevenue: 9000, contractRevenue: 10000, isFuture: false },
+    { month: 'months.june', rideRevenue: 34000, contractRevenue: 48000, isFuture: false },
+    { month: 'months.may', rideRevenue: 36000, contractRevenue: 52000, isFuture: false },
+    { month: 'months.april', rideRevenue: 32000, contractRevenue: 46000, isFuture: false },
+    { month: 'months.march', rideRevenue: 28000, contractRevenue: 40000, isFuture: false },
+    { month: 'months.february', rideRevenue: 24000, contractRevenue: 35000, isFuture: false },
+    { month: 'months.january', rideRevenue: 20000, contractRevenue: 30000, isFuture: false },
   ],
 }
 
@@ -105,3 +105,108 @@ export const statItemsMock: Record<OverviewStat['id'], DrawerItem[]> = {
     { id: 'c3', title: 'Contract #C-4102', subtitle: 'Kia Sportage', statusKey: 'dashboard.status.expired', statusTone: 'neutral' },
   ],
 }
+
+
+export const ridesContractsTrend: RidesContractsTrend = {
+  total: 3068,
+  data: [
+    { month: 'months.december', rides: 210, contracts: 140 },
+    { month: 'months.november', rides: 195, contracts: 130 },
+    { month: 'months.october', rides: 240, contracts: 150 },
+    { month: 'months.september', rides: 180, contracts: 110 },
+    { month: 'months.august', rides: 160, contracts: 95 },
+    { month: 'months.july', rides: 170, contracts: 100 },
+    { month: 'months.june', rides: 260, contracts: 175 },
+    { month: 'months.may', rides: 280, contracts: 190 },
+    { month: 'months.april', rides: 250, contracts: 165 },
+    { month: 'months.march', rides: 220, contracts: 145 },
+    { month: 'months.february', rides: 205, contracts: 135 },
+    { month: 'months.january', rides: 190, contracts: 120 },
+  ],
+}
+
+export const vehicleUsageSegments: VehicleUsageSegment[] = [
+  { key: 'riyadh', labelKey: 'usage.branch.riyadh', color: '#1B5E20' },
+  { key: 'jeddah', labelKey: 'usage.branch.jeddah', color: '#2E7D32' },
+  { key: 'dammam', labelKey: 'usage.branch.dammam', color: '#66BB6A' },
+  { key: 'mecca', labelKey: 'usage.branch.mecca', color: '#42A5F5' },
+  { key: 'medina', labelKey: 'usage.branch.medina', color: '#9575CD' },
+  { key: 'other', labelKey: 'usage.branch.other', color: '#BDBDBD' },
+]
+
+const usageKeys = vehicleUsageSegments.map((s) => s.key)
+
+const makeUsageRow = (month: string, base: number[]): { month: string; values: Record<string, number> } => {
+  const values: Record<string, number> = {}
+  usageKeys.forEach((key, i) => {
+    values[key] = base[i]
+  })
+  return { month, values }
+}
+
+export const vehicleUsage: VehicleUsagePerformance = {
+  utilizationPercentage: 67,
+  segments: vehicleUsageSegments,
+  data: [
+    makeUsageRow('months.december', [320, 210, 90, 60, 40, 25]),
+    makeUsageRow('months.november', [300, 200, 85, 55, 38, 22]),
+    makeUsageRow('months.october', [340, 220, 95, 65, 42, 28]),
+    makeUsageRow('months.september', [280, 180, 75, 50, 35, 20]),
+    makeUsageRow('months.august', [250, 160, 65, 45, 30, 18]),
+    makeUsageRow('months.july', [1034, 799, 517, 470, 423, 423]),
+    makeUsageRow('months.june', [360, 240, 100, 70, 45, 30]),
+    makeUsageRow('months.may', [370, 245, 105, 72, 47, 31]),
+    makeUsageRow('months.april', [355, 235, 98, 68, 44, 29]),
+    makeUsageRow('months.march', [330, 215, 92, 62, 41, 27]),
+    makeUsageRow('months.february', [310, 205, 88, 58, 39, 24]),
+    makeUsageRow('months.january', [290, 195, 80, 52, 36, 21]),
+  ],
+}
+
+export const recentActivity: ActivityItem[] = [
+  {
+    id: 'a1',
+    type: 'contractCreated',
+    titleKey: 'activity.types.contractCreated',
+    detail: 'Toyota Camry · Khalid Al-Otaibi · #C-4821',
+    statusKey: 'dashboard.status.active',
+    statusTone: 'info',
+    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2h ago
+  },
+  {
+    id: 'a2',
+    type: 'paymentReceived',
+    titleKey: 'activity.types.paymentReceived',
+    detail: '4,500 SAR · Contract #C-4790',
+    statusKey: 'activity.status.completed',
+    statusTone: 'success',
+    timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5h ago
+  },
+  {
+    id: 'a3',
+    type: 'rideCompleted',
+    titleKey: 'activity.types.rideCompleted',
+    detail: 'Riyadh → King Khalid Intl. Airport · Driver Sami',
+    statusKey: 'activity.status.completed',
+    statusTone: 'success',
+    timestamp: new Date(Date.now() - 26 * 60 * 60 * 1000).toISOString(), // yesterday
+  },
+  {
+    id: 'a4',
+    type: 'vehicleReturned',
+    titleKey: 'activity.types.vehicleReturned',
+    detail: 'Hyundai Sonata · 32,100 km',
+    statusKey: 'dashboard.status.available',
+    statusTone: 'success',
+    timestamp: new Date(Date.now() - 30 * 60 * 60 * 1000).toISOString(), // yesterday
+  },
+  {
+    id: 'a5',
+    type: 'contractExpiring',
+    titleKey: 'activity.types.contractExpiring',
+    detail: '#C-4655 · Expires in 3 days',
+    statusKey: 'activity.status.pending',
+    statusTone: 'warning',
+    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+  },
+]

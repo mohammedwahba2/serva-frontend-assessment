@@ -47,7 +47,7 @@ export function Header({ userName }: HeaderProps) {
   }
 
   return (
-    <header className="flex items-center justify-between bg-brand-bg px-6 py-6">
+    <header className="flex items-center justify-between px-6 py-6">
       <Logo />
 
       <div className="flex items-center gap-4">

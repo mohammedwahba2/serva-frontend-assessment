@@ -1,6 +1,20 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
-import type { DrawerItem, OverviewStat, RevenuePerformance } from '../types'
-import { overviewStats, revenuePerformance, statItemsMock } from '../mockData'
+import type {
+  DrawerItem,
+  OverviewStat,
+  RevenuePerformance,
+  RidesContractsTrend,
+  VehicleUsagePerformance,
+  ActivityItem,
+} from '../types'
+import {
+  overviewStats,
+  revenuePerformance,
+  statItemsMock,
+  ridesContractsTrend,
+  vehicleUsage,
+  recentActivity,
+} from '../mockData'
 
 export const dashboardApi = createApi({
   reducerPath: 'dashboardApi',
@@ -24,6 +38,24 @@ export const dashboardApi = createApi({
         return { data: statItemsMock[statId] ?? [] }
       },
     }),
+    getRidesContractsTrend: builder.query<RidesContractsTrend, void>({
+      queryFn: async () => {
+        await new Promise((resolve) => setTimeout(resolve, 300))
+        return { data: ridesContractsTrend }
+      },
+    }),
+    getVehicleUsage: builder.query<VehicleUsagePerformance, void>({
+      queryFn: async () => {
+        await new Promise((resolve) => setTimeout(resolve, 300))
+        return { data: vehicleUsage }
+      },
+    }),
+    getRecentActivity: builder.query<ActivityItem[], void>({
+      queryFn: async () => {
+        await new Promise((resolve) => setTimeout(resolve, 300))
+        return { data: recentActivity }
+      },
+    }),
   }),
 })
 
@@ -31,4 +63,7 @@ export const {
   useGetOverviewStatsQuery,
   useGetRevenuePerformanceQuery,
   useGetStatItemsQuery,
+  useGetRidesContractsTrendQuery,
+  useGetVehicleUsageQuery,
+  useGetRecentActivityQuery,
 } = dashboardApi

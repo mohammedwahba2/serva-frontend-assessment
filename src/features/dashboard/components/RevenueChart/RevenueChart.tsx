@@ -179,7 +179,7 @@ const rideRadius: [number, number, number, number] =
                 <KeyboardArrowLeftIcon sx={{ fontSize: 16 }} className="rtl:rotate-180" />
             </div>
           <div className="flex flex-col items-start">
-            <span className="font-medium  text-sm text-brand-dark">{data.currentPeriodLabel}</span>
+            <span className="font-medium  text-sm text-brand-dark">{t(data.currentPeriodLabel)}</span>
             <span>{t('revenue.previousPeriod')}</span>
           </div>
         </button>
@@ -209,12 +209,14 @@ const rideRadius: [number, number, number, number] =
 
       <ResponsiveContainer width="100%" height={260}>
         <BarChart data={data.data} barCategoryGap="30%">
-          <XAxis
-            dataKey="month"
-            tick={{ fontSize: 11, fill: '#9E9E9E' }}
-            axisLine={false}
-            tickLine={false}
-          />
+        <XAxis
+          dataKey="month"
+          tickFormatter={(value) => t(value)}
+          tick={{ fontSize: 12, fill: '#9E9E9E' }}
+          axisLine={false}
+          tickLine={false}
+          interval={0}
+        />
         <Tooltip content={<RevenueTooltip />} cursor={{ fill: 'transparent' }} />
 <Bar
   dataKey="rideRevenue"
@@ -266,7 +268,7 @@ const rideRadius: [number, number, number, number] =
             alignItems: 'center',
             cursor: 'pointer',
             opacity: visibleSeries[entry.dataKey] ? 1 : 0.4,
-            gap: 6, // المسافة بين الدائرة والكلمة
+            gap: 6,
           }}
         >
           <span

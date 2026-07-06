@@ -93,11 +93,11 @@ export function StatusDrawer({
       slotProps={{
         paper: {
             
-          sx: { width: { xs: '100%', sm: 580 }, direction: isRtl ? 'rtl' : 'ltr' },
+          sx: { width: { xs: '100%', sm: 600 }, direction: isRtl ? 'rtl' : 'ltr', bgcolor: '#FFFFFF', borderRadius: 0, boxShadow: 'none' },
         },
       }}
     >
-      <div className="flex flex-col h-full bg-white">
+      <div className="flex flex-col h-full">
         <div className="flex items-start justify-between p-4 border-b border-gray-100">
           <div>
             <h2 className="text-base font-semibold text-brand-dark">{headerTitle}</h2>
