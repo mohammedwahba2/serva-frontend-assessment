@@ -23,6 +23,7 @@ import type { OverviewStat } from '@/features/dashboard/types'
 import { TrendChart } from '@/features/dashboard/components/TrendChart/TrendChart'
 import { VehicleUsageChart } from '@/features/dashboard/components/VehicleUsageChart/VehicleUsageChart'
 import { RecentActivity } from '@/features/dashboard/components/RecentActivity'
+import { StatCardSkeleton } from './features/dashboard/components/StatCard/StatCardSkeleton'
 
 function App() {
   const { t, i18n } = useTranslation()
@@ -35,10 +36,20 @@ function App() {
     rides: <CommuteOutlinedIcon fontSize="small" />,
   }
 
-  const { data } = useGetOverviewStatsQuery()
-const { data: trendData } = useGetRidesContractsTrendQuery()
-const { data: usageData } = useGetVehicleUsageQuery()
+const {
+  data,
+  isLoading: overviewLoading,
+} = useGetOverviewStatsQuery()
 
+const {
+  data: trendData,
+  isLoading: trendLoading,
+} = useGetRidesContractsTrendQuery()
+
+const {
+  data: usageData,
+  isLoading: usageLoading,
+} = useGetVehicleUsageQuery()
   const [drawerState, setDrawerState] = useState<{
     statId: OverviewStat['id']
     status: string
@@ -63,14 +74,18 @@ const { data: usageData } = useGetVehicleUsageQuery()
             <WelcomeBanner />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-6">
-              {data?.map((stat) => (
-                <StatCard
-                  key={stat.id}
-                  stat={stat}
-                  icon={iconMap[stat.id]}
-                  onStatusClick={handleStatusClick}
-                />
-              ))}
+              {overviewLoading
+              ? Array.from({ length: 4 }).map((_, index) => (
+                  <StatCardSkeleton key={index} />
+                ))
+              : data?.map((stat) => (
+                  <StatCard
+                    key={stat.id}
+                    stat={stat}
+                    icon={iconMap[stat.id]}
+                    onStatusClick={handleStatusClick}
+                  />
+                ))}
             </div>
 
               <div className="px-6 mt-4">

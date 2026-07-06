@@ -18,8 +18,8 @@ export function StatCard({
   icon,
   onStatusClick,
 }: StatCardProps) {
-  const { t, i18n } = useTranslation()
-  const isRtl = i18n.language === 'ar'
+  const { t } = useTranslation()
+
 
   const [isHovered, setIsHovered] = useState(false)
   const isUp = stat.trend.direction === 'up'

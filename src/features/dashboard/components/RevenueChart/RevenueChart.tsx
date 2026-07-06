@@ -38,7 +38,6 @@ export function RevenueChart() {
   const [branch, setBranch] = useState<BranchValue>('all')
   const [offset, setOffset] = useState(0)
 
-  // لما يغيّر الفترة أو الفرع، منطقي نرجع لـ "الحالي" بدل ما نفضل تايهين في الأوفست القديم
   useEffect(() => {
     setOffset(0)
   }, [period, branch])
