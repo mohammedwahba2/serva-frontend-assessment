@@ -159,5 +159,12 @@
     "title": "Page Not Found",
     "description": "Sorry, the page you are looking for doesn't exist or may have been moved.",
     "goHome": "Back to Dashboard"
+  },
+  "weeks": {
+  "w1": "Week 1", "w2": "Week 2", "w3": "Week 3", "w4": "Week 4",
+  "w5": "Week 5", "w6": "Week 6", "w7": "Week 7", "w8": "Week 8"
+  },
+  "years": {
+    "y2023": "2023", "y2024": "2024", "y2025": "2025", "y2026": "2026", "y2027": "2027"
   }
 }

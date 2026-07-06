@@ -24,7 +24,7 @@ export function TrendTooltip({ active, payload, label }: TrendTooltipProps) {
         color: '#FFFFFF',
       }}
     >
-      <p className="text-sm font-medium mb-2"><p>{label ? t(label) : ''}</p></p>
+     <p className="text-sm font-medium mb-2">{label ? t(label) : ''}</p>
 
       <div className="flex items-center justify-between gap-4 mb-1.5">
         <span className="text-xs text-gray-300">{t('trend.series.rides')}</span>

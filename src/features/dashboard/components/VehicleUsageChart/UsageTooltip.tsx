@@ -25,7 +25,8 @@ export function UsageTooltip({ active, payload, label, segments }: UsageTooltipP
         color: '#FFFFFF',
       }}
     >
-      <p className="text-sm font-medium mb-2"><p>{label ? t(label) : ''}</p></p>
+     <p className="text-sm font-medium mb-2">{label ? t(label) : ''}</p>
+
 
       {segments.map((seg) => {
         const value = payload.find((p) => p.dataKey === seg.key)?.value ?? 0
