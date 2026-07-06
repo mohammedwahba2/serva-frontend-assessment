@@ -33,12 +33,13 @@ export interface RevenuePerformance {
   data: RevenueDataPoint[]
 }
 
-export interface DrawerItem {
-  id: string
-  title: string
-  subtitle: string
-  statusKey: string 
-  meta?: string
+export type PeriodValue = 'monthly' | 'weekly' | 'yearly'
+export type BranchValue = 'all' | 'riyadh' | 'jeddah'
+
+export interface RevenueQueryParams {
+  period: PeriodValue
+  branch: BranchValue
+  offset: number 
 }
 
 export interface DrawerItem {
@@ -92,5 +93,5 @@ export interface ActivityItem {
   detail: string
   statusKey: string
   statusTone: 'success' | 'info' | 'warning' | 'danger' | 'neutral'
-  timestamp: string 
+  timestamp: string
 }
