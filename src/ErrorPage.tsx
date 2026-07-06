@@ -41,6 +41,12 @@ export default function ErrorPage() {
           size="large"
           startIcon={<HomeRoundedIcon />}
           onClick={() => navigate('/')}
+            sx={{
+               textTransform: 'capitalize',
+              '& .MuiButton-startIcon': {
+                marginInlineEnd: '10px',
+              },
+            }}
         >
           {t('error.goHome')}
         </Button>

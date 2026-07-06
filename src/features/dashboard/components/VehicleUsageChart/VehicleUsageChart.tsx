@@ -6,7 +6,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import type { BranchValue, PeriodValue } from '../../types'
 import { useGetVehicleUsageQuery } from '../../api/dashboardApi'
 import { UsageTooltip } from './UsageTooltip'
-import { ChartSkeleton } from '../ChartSkeleton'
+import { ChartSkeleton } from '../ChartSkeleton/ChartSkeleton'
 
 const periodOptions = [
   { value: 'monthly', labelKey: 'usage.period.monthly' },

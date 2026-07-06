@@ -35,13 +35,11 @@ const toneStyles: Record<ActivityItem['statusTone'], { bg: string; text: string 
 }
 
 export function RecentActivity() {
-  const { t, i18n } = useTranslation()
-  const isRtl = i18n.dir() === 'rtl'
-  
+  const { t } = useTranslation()
   const { data: items } = useGetRecentActivityQuery()
 
   return (
-   <Card sx={{ borderRadius: '16px', bgcolor: '#F0EBE3', boxShadow: 'none', p: 0, overflow: 'hidden', direction: isRtl ? 'rtl' : 'ltr' }}>
+   <Card sx={{ borderRadius: '16px', bgcolor: '#F0EBE3', boxShadow: 'none', p: 0, overflow: 'hidden', direction: 'rtl' }}>
       <div className="flex items-center justify-between px-5 py-4">
         <Button
           variant="text"
