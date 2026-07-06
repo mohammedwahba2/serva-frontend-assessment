@@ -71,5 +71,22 @@
       "riyadh": "Riyadh",
       "jeddah": "Jeddah"
     }
+  },
+"drawer": {
+  "close": "Close",
+  "searchPlaceholder": "Search by plate or model",
+  "filter": "Filter",
+  "showing": "Showing {{count}} of {{total}}",
+  "availableCount": "{{count}} available",
+  "allTitle": "{{title}}",
+  "noResults": "No items match this status",
+  "viewFullList": "View Full List",
+  "actions": {
+    "contract": "Contract",
+    "profile": "Profile",
+    "assign": "Assign",
+    "viewTrip": "View Trip",
+    "renew": "Renew"
   }
+}
 }

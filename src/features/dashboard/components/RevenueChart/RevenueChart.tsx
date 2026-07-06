@@ -118,20 +118,7 @@ const rideRadius: [number, number, number, number] =
   visibleSeries.contractRevenue
     ? [0, 0, 0, 0]
     : [6, 6, 0, 0];
-const legendPayload = [
-  {
-    value: 'Revenue',
-    dataKey: 'revenue',
-    color: '#3B82F6',
-    type: 'circle',
-  },
-  {
-    value: 'Expenses',
-    dataKey: 'expenses',
-    color: '#10B981',
-    type: 'circle',
-  },
-]
+
   return (
     <Card sx={{ borderRadius: '16px', bgcolor: '#F0EBE3', boxShadow: 'none', p: 3 }}>
       <div className="flex justify-between items-center">

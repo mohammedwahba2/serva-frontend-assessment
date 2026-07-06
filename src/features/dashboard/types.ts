@@ -32,3 +32,20 @@ export interface RevenuePerformance {
   currentPeriodLabel: string
   data: RevenueDataPoint[]
 }
+
+export interface DrawerItem {
+  id: string
+  title: string
+  subtitle: string
+  statusKey: string 
+  meta?: string
+}
+
+export interface DrawerItem {
+  id: string
+  title: string
+  subtitle: string
+  meta?: string
+  statusKey: string
+  statusTone: 'success' | 'info' | 'warning' | 'danger' | 'neutral'
+}

@@ -71,5 +71,22 @@
       "riyadh": "الرياض",
       "jeddah": "جدة"
     }
+  },
+"drawer": {
+  "close": "إغلاق",
+  "searchPlaceholder": "ابحث برقم اللوحة أو الموديل",
+  "filter": "تصفية",
+  "showing": "عرض {{count}} من {{total}}",
+  "availableCount": "{{count}} متاحة",
+  "allTitle": "{{title}}",
+  "noResults": "لا توجد عناصر مطابقة لهذه الحالة",
+  "viewFullList": "عرض القائمة كاملة",
+  "actions": {
+    "contract": "عقد",
+    "profile": "الملف",
+    "assign": "تعيين",
+    "viewTrip": "عرض الرحلة",
+    "renew": "تجديد"
   }
+}
 }

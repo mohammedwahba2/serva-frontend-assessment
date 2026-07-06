@@ -1,6 +1,6 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
-import type { OverviewStat, RevenuePerformance } from '../types'
-import { overviewStats, revenuePerformance } from '../mockData'
+import type { DrawerItem, OverviewStat, RevenuePerformance } from '../types'
+import { overviewStats, revenuePerformance, statItemsMock } from '../mockData'
 
 export const dashboardApi = createApi({
   reducerPath: 'dashboardApi',
@@ -18,7 +18,17 @@ export const dashboardApi = createApi({
         return { data: revenuePerformance }
       },
     }),
+    getStatItems: builder.query<DrawerItem[], OverviewStat['id']>({
+      queryFn: async (statId) => {
+        await new Promise((resolve) => setTimeout(resolve, 250))
+        return { data: statItemsMock[statId] ?? [] }
+      },
+    }),
   }),
 })
 
-export const { useGetOverviewStatsQuery, useGetRevenuePerformanceQuery } = dashboardApi
+export const {
+  useGetOverviewStatsQuery,
+  useGetRevenuePerformanceQuery,
+  useGetStatItemsQuery,
+} = dashboardApi
