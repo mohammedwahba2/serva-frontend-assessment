@@ -30,23 +30,6 @@ App runs on `http://localhost:5173`.
 | `npm run lint` | Run ESLint |
 | `npm run preview` | Preview production build |
 
-## Project Structure
-
-```
-src/
-├── app/          # Store config, typed hooks, root App
-├── routes/       # Routing
-├── features/
-│   └── dashboard/
-│       ├── components/
-│       ├── api/      # RTK Query endpoints
-│       └── hooks/
-├── shared/       # Shared components, layouts, utils
-├── i18n/         # Translations (en/ar)
-└── theme/        # MUI theme + RTL setup
-```
-
-Path aliases are set up (`@/` → `src/`) for cleaner imports across features.
 
 ## Assumptions & Notes
 

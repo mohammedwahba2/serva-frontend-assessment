@@ -79,6 +79,7 @@
   "showing": "عرض {{count}} من {{total}}",
   "availableCount": "{{count}} متاحة",
   "allTitle": "{{title}}",
+  "byStatus": "{{title}} - {{status}}",
   "noResults": "لا توجد عناصر مطابقة لهذه الحالة",
   "viewFullList": "عرض القائمة كاملة",
   "actions": {
@@ -87,7 +88,14 @@
     "assign": "تعيين",
     "viewTrip": "عرض الرحلة",
     "renew": "تجديد"
-  }
+  },
+  "filterAll": "كل الحالات",
+ "moreMenu": {
+    "viewDetails": "عرض التفاصيل",
+    "remove": "إزالة من القائمة"
+  },
+  "comingSoonAction": "إجراء \"{{action}}\" لسه مش متوصل بباك اند حقيقي",
+  "removedToast": "تمت إزالة \"{{title}}\" من القائمة"
 },
 "trend": {
   "title": "اتجاه الرحلات والعقود",

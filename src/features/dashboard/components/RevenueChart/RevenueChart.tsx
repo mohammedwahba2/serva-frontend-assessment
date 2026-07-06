@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Card, Select, MenuItem, CircularProgress } from '@mui/material'
+import { Card, Select, MenuItem } from '@mui/material'
 import { BarChart, Bar, Cell, XAxis, ResponsiveContainer, Tooltip, Legend } from 'recharts'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'

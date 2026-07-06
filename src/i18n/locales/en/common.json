@@ -79,6 +79,7 @@
   "showing": "Showing {{count}} of {{total}}",
   "availableCount": "{{count}} available",
   "allTitle": "{{title}}",
+  "byStatus": "{{title}} - {{status}}",
   "noResults": "No items match this status",
   "viewFullList": "View Full List",
   "actions": {
@@ -87,7 +88,15 @@
     "assign": "Assign",
     "viewTrip": "View Trip",
     "renew": "Renew"
-  }
+  },
+      "filterAll": "All statuses",
+  "moreMenu": {
+    "viewDetails": "View Details",
+    "remove": "Remove from list"
+  },
+  "comingSoonAction": "\"{{action}}\" isn't connected to a backend yet",
+  "removedToast": "\"{{title}}\" removed from the list"
+
 },
 "trend": {
   "title": "Rides & Contracts Trend",
