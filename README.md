@@ -32,6 +32,7 @@ App runs on `http://localhost:5173`.
 
 ## Project Structure
 
+```
 src/
 ├── app/          # Store config, typed hooks, root App
 ├── routes/       # Routing
@@ -43,6 +44,7 @@ src/
 ├── shared/       # Shared components, layouts, utils
 ├── i18n/         # Translations (en/ar)
 └── theme/        # MUI theme + RTL setup
+```
 
 Path aliases are set up (`@/` → `src/`) for cleaner imports across features.
 
