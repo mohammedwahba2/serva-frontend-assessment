@@ -38,7 +38,7 @@ export function RecentActivity() {
   const { t, i18n } = useTranslation()
   const isRtl = i18n.dir() === 'rtl'
   
-  const { data: items, isLoading } = useGetRecentActivityQuery()
+  const { data: items } = useGetRecentActivityQuery()
 
   return (
    <Card sx={{ borderRadius: '16px', bgcolor: '#F0EBE3', boxShadow: 'none', p: 0, overflow: 'hidden', direction: isRtl ? 'rtl' : 'ltr' }}>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Card, Select, MenuItem, CircularProgress } from '@mui/material'
 import { BarChart, Bar, Cell, XAxis, ResponsiveContainer, Tooltip, Legend } from 'recharts'
@@ -10,7 +10,7 @@ import TrendingDownIcon from '@mui/icons-material/TrendingDown'
 import type { BranchValue, PeriodValue } from '../../types'
 import { useGetRevenuePerformanceQuery } from '../../api/dashboardApi'
 import { RevenueTooltip } from './RevenueTooltip'
-
+import type { Props as LegendContentProps } from 'recharts/types/component/DefaultLegendContent'
 const seriesConfig = {
   rideRevenue: { labelKey: 'revenue.series.rideRevenue', color: '#1A1A1A' },
   contractRevenue: { labelKey: 'revenue.series.contractRevenue', color: '#8C8C8C' },
@@ -37,10 +37,6 @@ export function RevenueChart() {
   const [period, setPeriod] = useState<PeriodValue>('monthly')
   const [branch, setBranch] = useState<BranchValue>('all')
   const [offset, setOffset] = useState(0)
-
-  useEffect(() => {
-    setOffset(0)
-  }, [period, branch])
 
   const { data, isLoading } = useGetRevenuePerformanceQuery({ period, branch, offset })
 
@@ -101,7 +97,11 @@ export function RevenueChart() {
         <div className="flex items-center gap-2 mb-4">
           <Select
             value={branch}
-            onChange={(e) => setBranch(e.target.value as BranchValue)}
+            onChange={(e) => {
+              const value = e.target.value as BranchValue
+              setOffset(0)
+              setBranch(value)
+            }}
             IconComponent={KeyboardArrowDownIcon}
             sx={filterSx}
             MenuProps={menuProps}
@@ -116,7 +116,12 @@ export function RevenueChart() {
 
           <Select
             value={period}
-            onChange={(e) => setPeriod(e.target.value as PeriodValue)}
+            onChange={(e) => {
+              const value = e.target.value as PeriodValue
+              setOffset(0)
+              setPeriod(value)
+            }}
+
             IconComponent={KeyboardArrowDownIcon}
             sx={filterSx}
             MenuProps={menuProps}
@@ -192,12 +197,12 @@ export function RevenueChart() {
           </Bar>
           <Legend
             verticalAlign="bottom"
-            content={({ payload }) => (
+           content={(props: LegendContentProps) => (
               <div style={{ display: 'flex', justifyContent: 'center', gap: 20 }}>
-                {payload?.map((entry: any) => (
+               {props.payload?.map((entry) => (
                   <div
-                    key={entry.dataKey}
-                    onClick={() => toggleSeries(entry.dataKey)}
+                    key={String(entry.dataKey)}
+                    onClick={() => toggleSeries(entry.dataKey as SeriesKey)}
                     style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', opacity: visibleSeries[entry.dataKey as SeriesKey] ? 1 : 0.4, gap: 6 }}
                   >
                     <span style={{ width: 10, height: 10, borderRadius: '50%', background: entry.color, display: 'inline-block', flexShrink: 0 }} />

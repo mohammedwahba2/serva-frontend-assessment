@@ -5,6 +5,7 @@ import { BarChart, Bar, XAxis, ResponsiveContainer, Tooltip, Legend } from 'rech
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import type { RidesContractsTrend } from '../../types'
 import { TrendTooltip } from './TrendTooltip'
+import type { Props as LegendContentProps } from 'recharts/types/component/DefaultLegendContent'
 
 interface TrendChartProps {
   data: RidesContractsTrend
@@ -75,7 +76,11 @@ export function TrendChart({ data, onPeriodChange, onBranchChange }: TrendChartP
         <div className="flex items-center gap-2">
           <Select
             value={branch}
-            onChange={(e) => { setBranch(e.target.value); onBranchChange?.(e.target.value) }}
+            onChange={(e) => {
+                const value = e.target.value as string
+                setBranch(value)
+                onBranchChange?.(value)
+              }}
             IconComponent={KeyboardArrowDownIcon}
             sx={filterSx}
             MenuProps={menuProps}
@@ -90,7 +95,11 @@ export function TrendChart({ data, onPeriodChange, onBranchChange }: TrendChartP
 
           <Select
             value={period}
-            onChange={(e) => { setPeriod(e.target.value); onPeriodChange?.(e.target.value) }}
+            onChange={(e) => {
+              const value = e.target.value as string
+              setPeriod(value)
+              onPeriodChange?.(value)
+            }}
             IconComponent={KeyboardArrowDownIcon}
             sx={filterSx}
             MenuProps={menuProps}
@@ -139,11 +148,11 @@ export function TrendChart({ data, onPeriodChange, onBranchChange }: TrendChartP
           />
           <Legend
             verticalAlign="bottom"
-            content={({ payload }) => (
+           content={(props: LegendContentProps) => (
               <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 8 }}>
-                {payload?.map((entry: any) => (
+               {props.payload?.map((entry) => (
                   <div
-                    key={entry.dataKey}
+                   key={String(entry.dataKey)}
                     onClick={() => toggleSeries(entry.dataKey as SeriesKey)}
                     style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', opacity: visibleSeries[entry.dataKey as SeriesKey] ? 1 : 0.4 }}
                   >

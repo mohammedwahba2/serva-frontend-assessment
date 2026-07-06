@@ -43,12 +43,10 @@ const {
 
 const {
   data: trendData,
-  isLoading: trendLoading,
 } = useGetRidesContractsTrendQuery()
 
 const {
   data: usageData,
-  isLoading: usageLoading,
 } = useGetVehicleUsageQuery()
   const [drawerState, setDrawerState] = useState<{
     statId: OverviewStat['id']

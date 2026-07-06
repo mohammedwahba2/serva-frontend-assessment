@@ -33,7 +33,7 @@ export function RevenueTooltip({ active, payload, label }: RevenueTooltipProps) 
         color: '#FFFFFF',
       }}
     >
-      <p className="text-sm font-medium mb-2">{t(label)}</p>
+      <p className="text-sm font-medium mb-2"><p>{label ? t(label) : ''}</p></p>
 
       <div className="flex items-center justify-between gap-4 mb-1.5">
         <div className="flex items-center gap-1.5">
