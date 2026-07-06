@@ -1,17 +1,13 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Card, Select, MenuItem } from '@mui/material'
-import { BarChart, Bar, XAxis, ResponsiveContainer, Tooltip, Legend } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } from 'recharts'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import type { RidesContractsTrend } from '../../types'
+import type { BranchValue, PeriodValue } from '../../types'
+import { useGetRidesContractsTrendQuery } from '../../api/dashboardApi'
 import { TrendTooltip } from './TrendTooltip'
+import { ChartSkeleton } from '../ChartSkeleton'
 import type { Props as LegendContentProps } from 'recharts/types/component/DefaultLegendContent'
-
-interface TrendChartProps {
-  data: RidesContractsTrend
-  onPeriodChange?: (period: string) => void
-  onBranchChange?: (branch: string) => void
-}
 
 const seriesConfig = {
   rides: { labelKey: 'trend.series.rides', color: '#1A1A1A' },
@@ -32,11 +28,12 @@ const branchOptions = [
   { value: 'jeddah', labelKey: 'revenue.branch.jeddah' },
 ] as const
 
-
-export function TrendChart({ data, onPeriodChange, onBranchChange }: TrendChartProps) {
+export function TrendChart() {
   const { t, i18n } = useTranslation()
-  const [period, setPeriod] = useState<string>('monthly')
-  const [branch, setBranch] = useState<string>('all')
+  const [period, setPeriod] = useState<PeriodValue>('monthly')
+  const [branch, setBranch] = useState<BranchValue>('all')
+
+  const { data, isLoading } = useGetRidesContractsTrendQuery({ period, branch })
 
   const [visibleSeries, setVisibleSeries] = useState<Record<SeriesKey, boolean>>({
     rides: true,
@@ -52,13 +49,14 @@ export function TrendChart({ data, onPeriodChange, onBranchChange }: TrendChartP
     })
   }
 
-   const filterSx = {
-  fontSize: 14,
-  borderRadius: '6px',
-  bgcolor: '#FFFFFF',
-  '.MuiOutlinedInput-notchedOutline': { borderColor: '#E0DACF' },
-  '& .MuiSelect-select': { py: 0.7, px: 1.5 },
-}
+  const filterSx = {
+    fontSize: 14,
+    borderRadius: '6px',
+    bgcolor: '#FFFFFF',
+    '.MuiOutlinedInput-notchedOutline': { borderColor: '#E0DACF' },
+    '& .MuiSelect-select': { py: 0.7, px: 1.5 },
+  }
+
   const menuProps = {
     slotProps: {
       paper: {
@@ -68,6 +66,13 @@ export function TrendChart({ data, onPeriodChange, onBranchChange }: TrendChartP
     },
   }
 
+  if (isLoading || !data) {
+    return <ChartSkeleton height={220} />
+  }
+
+  const maxValue = Math.max(...data.data.flatMap((d) => [d.rides, d.contracts]), 1)
+  const yDomain: [number, number] = [0, Math.ceil(maxValue * 1.1)]
+
   return (
     <Card sx={{ borderRadius: '16px', bgcolor: '#F0EBE3', boxShadow: 'none', p: 3 }}>
       <div className="flex items-center justify-between mb-4">
@@ -76,11 +81,7 @@ export function TrendChart({ data, onPeriodChange, onBranchChange }: TrendChartP
         <div className="flex items-center gap-2">
           <Select
             value={branch}
-            onChange={(e) => {
-                const value = e.target.value as string
-                setBranch(value)
-                onBranchChange?.(value)
-              }}
+            onChange={(e) => setBranch(e.target.value as BranchValue)}
             IconComponent={KeyboardArrowDownIcon}
             sx={filterSx}
             MenuProps={menuProps}
@@ -95,11 +96,7 @@ export function TrendChart({ data, onPeriodChange, onBranchChange }: TrendChartP
 
           <Select
             value={period}
-            onChange={(e) => {
-              const value = e.target.value as string
-              setPeriod(value)
-              onPeriodChange?.(value)
-            }}
+            onChange={(e) => setPeriod(e.target.value as PeriodValue)}
             IconComponent={KeyboardArrowDownIcon}
             sx={filterSx}
             MenuProps={menuProps}
@@ -116,7 +113,7 @@ export function TrendChart({ data, onPeriodChange, onBranchChange }: TrendChartP
 
       <div className="flex items-baseline gap-2 mb-4">
         <span className="text-2xl font-bold text-brand-dark" dir="ltr">
-          {data.total.toLocaleString()}
+          {data.total.toLocaleString('en-US')}
         </span>
         <span className="text-sm text-gray-500">{t('trend.totalLabel')}</span>
       </div>
@@ -131,6 +128,7 @@ export function TrendChart({ data, onPeriodChange, onBranchChange }: TrendChartP
             tickLine={false}
             interval={0}
           />
+          <YAxis hide domain={yDomain} />
           <Tooltip content={<TrendTooltip />} cursor={{ fill: 'rgba(0,0,0,0.03)' }} />
           <Bar
             dataKey="rides"
@@ -138,6 +136,9 @@ export function TrendChart({ data, onPeriodChange, onBranchChange }: TrendChartP
             fill={seriesConfig.rides.color}
             radius={[4, 4, 0, 0]}
             name={t(seriesConfig.rides.labelKey)}
+            isAnimationActive
+            animationDuration={500}
+            animationEasing="ease-out"
           />
           <Bar
             dataKey="contracts"
@@ -145,16 +146,26 @@ export function TrendChart({ data, onPeriodChange, onBranchChange }: TrendChartP
             fill={seriesConfig.contracts.color}
             radius={[4, 4, 0, 0]}
             name={t(seriesConfig.contracts.labelKey)}
+            isAnimationActive
+            animationDuration={500}
+            animationEasing="ease-out"
           />
           <Legend
             verticalAlign="bottom"
-           content={(props: LegendContentProps) => (
+            content={(props: LegendContentProps) => (
               <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 8 }}>
-               {props.payload?.map((entry) => (
+                {props.payload?.map((entry) => (
                   <div
-                   key={String(entry.dataKey)}
+                    key={String(entry.dataKey)}
                     onClick={() => toggleSeries(entry.dataKey as SeriesKey)}
-                    style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', opacity: visibleSeries[entry.dataKey as SeriesKey] ? 1 : 0.4 }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      cursor: 'pointer',
+                      opacity: visibleSeries[entry.dataKey as SeriesKey] ? 1 : 0.4,
+                      transition: 'opacity 0.15s ease',
+                    }}
                   >
                     <span style={{ width: 9, height: 9, borderRadius: '50%', background: entry.color, display: 'inline-block' }} />
                     <span style={{ color: '#4B5563', fontSize: 12 }}>{entry.value}</span>

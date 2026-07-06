@@ -10,6 +10,7 @@ import TrendingDownIcon from '@mui/icons-material/TrendingDown'
 import type { BranchValue, PeriodValue } from '../../types'
 import { useGetRevenuePerformanceQuery } from '../../api/dashboardApi'
 import { RevenueTooltip } from './RevenueTooltip'
+import { ChartSkeleton } from '../ChartSkeleton'
 import type { Props as LegendContentProps } from 'recharts/types/component/DefaultLegendContent'
 const seriesConfig = {
   rideRevenue: { labelKey: 'revenue.series.rideRevenue', color: '#1A1A1A' },
@@ -76,14 +77,9 @@ export function RevenueChart() {
 
   const rideRadius: [number, number, number, number] = visibleSeries.contractRevenue ? [0, 0, 0, 0] : [6, 6, 0, 0]
 
-  if (isLoading || !data) {
-    return (
-      <Card sx={{ borderRadius: '16px', bgcolor: '#F0EBE3', boxShadow: 'none', p: 3, minHeight: 340, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <CircularProgress size={28} />
-      </Card>
-    )
-  }
-
+if (isLoading || !data) {
+  return <ChartSkeleton height={260} />
+}
   const isUp = data.changeDirection === 'up'
 
   return (

@@ -70,15 +70,18 @@ export function StatusDrawer({
     if (!items) return []
     return items.filter((item) => {
       const matchesStatus = status === 'all' || item.statusKey === status
-      const matchesSearch = item.title.toLowerCase().includes(search.toLowerCase())
+      const matchesSearch =
+        item.title.toLowerCase().includes(search.toLowerCase()) ||
+        item.subtitle.toLowerCase().includes(search.toLowerCase()) ||
+        (item.meta?.toLowerCase().includes(search.toLowerCase()) ?? false)
       return matchesStatus && matchesSearch
     })
   }, [items, status, search])
 
-  const headerTitle =
-    status === 'all'
-      ? t('drawer.allTitle', { title: t(statTitleKey ?? '') })
-      : t('dashboard.stats.byStatus', { title: t(statTitleKey ?? '') })
+const headerTitle =
+  status === 'all'
+    ? t('drawer.allTitle', { title: t(statTitleKey ?? '') })
+    : t('drawer.byStatus', { status: t(status), title: t(statTitleKey ?? '') })
 
   const actions = statId ? actionConfig[statId] : null
   const placeholderIcon = statId ? placeholderIconMap[statId] : null

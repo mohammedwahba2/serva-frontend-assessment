@@ -2,20 +2,28 @@ import type {
   DrawerItem,
   OverviewStat,
   RidesContractsTrend,
+  TrendDataPoint,
   VehicleUsagePerformance,
   VehicleUsageSegment,
+  VehicleUsageDataPoint,
   ActivityItem,
   RevenuePerformance,
   RevenueDataPoint,
   RevenueQueryParams,
+  PeriodBranchParams,
 } from './types'
-
 
 interface RevenueBucket {
   key: string       
   monthIndex: number 
   rideRevenue: number
   contractRevenue: number
+}
+
+interface TrendBucket {
+  key: string
+  rides: number
+  contracts: number
 }
 
 export const overviewStats: OverviewStat[] = [
@@ -105,22 +113,55 @@ export const statItemsMock: Record<OverviewStat['id'], DrawerItem[]> = {
 }
 
 
-export const ridesContractsTrend: RidesContractsTrend = {
-  total: 3068,
-  data: [
-    { month: 'months.december', rides: 210, contracts: 140 },
-    { month: 'months.november', rides: 195, contracts: 130 },
-    { month: 'months.october', rides: 240, contracts: 150 },
-    { month: 'months.september', rides: 180, contracts: 110 },
-    { month: 'months.august', rides: 160, contracts: 95 },
-    { month: 'months.july', rides: 170, contracts: 100 },
-    { month: 'months.june', rides: 260, contracts: 175 },
-    { month: 'months.may', rides: 280, contracts: 190 },
-    { month: 'months.april', rides: 250, contracts: 165 },
-    { month: 'months.march', rides: 220, contracts: 145 },
-    { month: 'months.february', rides: 205, contracts: 135 },
-    { month: 'months.january', rides: 190, contracts: 120 },
-  ],
+const TREND_MONTHLY_BUCKETS: TrendBucket[] = [
+  { key: 'months.december', rides: 210, contracts: 140 },
+  { key: 'months.november', rides: 195, contracts: 130 },
+  { key: 'months.october', rides: 240, contracts: 150 },
+  { key: 'months.september', rides: 180, contracts: 110 },
+  { key: 'months.august', rides: 160, contracts: 95 },
+  { key: 'months.july', rides: 170, contracts: 100 },
+  { key: 'months.june', rides: 260, contracts: 175 },
+  { key: 'months.may', rides: 280, contracts: 190 },
+  { key: 'months.april', rides: 250, contracts: 165 },
+  { key: 'months.march', rides: 220, contracts: 145 },
+  { key: 'months.february', rides: 205, contracts: 135 },
+  { key: 'months.january', rides: 190, contracts: 120 },
+]
+
+const TREND_WEEKLY_BUCKETS: TrendBucket[] = [
+  { key: 'weeks.w1', rides: 48, contracts: 30 },
+  { key: 'weeks.w2', rides: 55, contracts: 34 },
+  { key: 'weeks.w3', rides: 51, contracts: 32 },
+  { key: 'weeks.w4', rides: 60, contracts: 38 },
+  { key: 'weeks.w5', rides: 64, contracts: 41 },
+  { key: 'weeks.w6', rides: 58, contracts: 36 },
+  { key: 'weeks.w7', rides: 40, contracts: 25 },
+  { key: 'weeks.w8', rides: 36, contracts: 22 },
+]
+
+const TREND_YEARLY_BUCKETS: TrendBucket[] = [
+  { key: 'years.y2023', rides: 1900, contracts: 1250 },
+  { key: 'years.y2024', rides: 2400, contracts: 1600 },
+  { key: 'years.y2025', rides: 2900, contracts: 1950 },
+  { key: 'years.y2026', rides: 1800, contracts: 1150 },
+  { key: 'years.y2027', rides: 850, contracts: 560 },
+]
+
+export function getRidesContractsTrend({ period, branch }: PeriodBranchParams): RidesContractsTrend {
+  const buckets =
+    period === 'monthly' ? TREND_MONTHLY_BUCKETS : period === 'weekly' ? TREND_WEEKLY_BUCKETS : TREND_YEARLY_BUCKETS
+
+  const factor = BRANCH_FACTORS[branch]
+
+  const data: TrendDataPoint[] = buckets.map((b) => ({
+    month: b.key,
+    rides: Math.round(b.rides * factor),
+    contracts: Math.round(b.contracts * factor),
+  }))
+
+  const total = data.reduce((sum, d) => sum + d.rides + d.contracts, 0)
+
+  return { total, data }
 }
 
 export const vehicleUsageSegments: VehicleUsageSegment[] = [
@@ -141,26 +182,60 @@ const makeUsageRow = (month: string, base: number[]): { month: string; values: R
   })
   return { month, values }
 }
+const MONTHLY_USAGE_ROWS: VehicleUsageDataPoint[] = [
+  makeUsageRow('months.december', [320, 210, 90, 60, 40, 25]),
+  makeUsageRow('months.november', [300, 200, 85, 55, 38, 22]),
+  makeUsageRow('months.october', [340, 220, 95, 65, 42, 28]),
+  makeUsageRow('months.september', [280, 180, 75, 50, 35, 20]),
+  makeUsageRow('months.august', [250, 160, 65, 45, 30, 18]),
+  makeUsageRow('months.july', [1034, 799, 517, 470, 423, 423]),
+  makeUsageRow('months.june', [360, 240, 100, 70, 45, 30]),
+  makeUsageRow('months.may', [370, 245, 105, 72, 47, 31]),
+  makeUsageRow('months.april', [355, 235, 98, 68, 44, 29]),
+  makeUsageRow('months.march', [330, 215, 92, 62, 41, 27]),
+  makeUsageRow('months.february', [310, 205, 88, 58, 39, 24]),
+  makeUsageRow('months.january', [290, 195, 80, 52, 36, 21]),
+]
 
-export const vehicleUsage: VehicleUsagePerformance = {
-  utilizationPercentage: 67,
-  segments: vehicleUsageSegments,
-  data: [
-    makeUsageRow('months.december', [320, 210, 90, 60, 40, 25]),
-    makeUsageRow('months.november', [300, 200, 85, 55, 38, 22]),
-    makeUsageRow('months.october', [340, 220, 95, 65, 42, 28]),
-    makeUsageRow('months.september', [280, 180, 75, 50, 35, 20]),
-    makeUsageRow('months.august', [250, 160, 65, 45, 30, 18]),
-    makeUsageRow('months.july', [1034, 799, 517, 470, 423, 423]),
-    makeUsageRow('months.june', [360, 240, 100, 70, 45, 30]),
-    makeUsageRow('months.may', [370, 245, 105, 72, 47, 31]),
-    makeUsageRow('months.april', [355, 235, 98, 68, 44, 29]),
-    makeUsageRow('months.march', [330, 215, 92, 62, 41, 27]),
-    makeUsageRow('months.february', [310, 205, 88, 58, 39, 24]),
-    makeUsageRow('months.january', [290, 195, 80, 52, 36, 21]),
-  ],
+function scaleUsageValues(values: Record<string, number>, factor: number): Record<string, number> {
+  return Object.fromEntries(Object.entries(values).map(([key, v]) => [key, Math.max(0, Math.round(v * factor))]))
 }
 
+const WEEKLY_USAGE_LABELS = ['weeks.w1', 'weeks.w2', 'weeks.w3', 'weeks.w4', 'weeks.w5', 'weeks.w6', 'weeks.w7', 'weeks.w8']
+const WEEKLY_USAGE_ROWS: VehicleUsageDataPoint[] = WEEKLY_USAGE_LABELS.map((label, i) => ({
+  month: label,
+  values: scaleUsageValues(MONTHLY_USAGE_ROWS[i % MONTHLY_USAGE_ROWS.length].values, 0.26),
+}))
+
+const YEARLY_USAGE_LABELS = ['years.y2023', 'years.y2024', 'years.y2025', 'years.y2026', 'years.y2027']
+const YEARLY_USAGE_ROWS: VehicleUsageDataPoint[] = YEARLY_USAGE_LABELS.map((label, i) => ({
+  month: label,
+  values: scaleUsageValues(MONTHLY_USAGE_ROWS[i % MONTHLY_USAGE_ROWS.length].values, 10 + i * 2),
+}))
+
+const UTILIZATION_BY_BRANCH: Record<PeriodBranchParams['branch'], number> = {
+  all: 67,
+  riyadh: 74,
+  jeddah: 58,
+}
+
+export function getVehicleUsage({ period, branch }: PeriodBranchParams): VehicleUsagePerformance {
+  const rows =
+    period === 'monthly' ? MONTHLY_USAGE_ROWS : period === 'weekly' ? WEEKLY_USAGE_ROWS : YEARLY_USAGE_ROWS
+
+  const segments = branch === 'all' ? vehicleUsageSegments : vehicleUsageSegments.filter((s) => s.key === branch)
+
+  const data: VehicleUsageDataPoint[] = rows.map((row) => ({
+    month: row.month,
+    values: branch === 'all' ? row.values : { [branch]: row.values[branch] ?? 0 },
+  }))
+
+  return {
+    utilizationPercentage: UTILIZATION_BY_BRANCH[branch],
+    segments,
+    data,
+  }
+}
 export const recentActivity: ActivityItem[] = [
   {
     id: 'a1',

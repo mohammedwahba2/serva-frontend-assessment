@@ -6,11 +6,7 @@ import { cacheRtl, cacheLtr } from '@/theme/rtlCache'
 import { getTheme } from '@/theme/muiTheme'
 import { Sidebar } from './shared/layouts/Sidebar/Sidebar'
 import { Header } from './features/dashboard/components/Header'
-import {
-  useGetOverviewStatsQuery,
-  useGetRidesContractsTrendQuery,
-  useGetVehicleUsageQuery,
-} from '@/features/dashboard/api/dashboardApi'
+import { useGetOverviewStatsQuery } from '@/features/dashboard/api/dashboardApi'
 import { StatCard } from '@/features/dashboard/components/StatCard/StatCard'
 import { StatusDrawer } from '@/features/dashboard/components/StatusDrawer'
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline'
@@ -41,13 +37,7 @@ const {
   isLoading: overviewLoading,
 } = useGetOverviewStatsQuery()
 
-const {
-  data: trendData,
-} = useGetRidesContractsTrendQuery()
 
-const {
-  data: usageData,
-} = useGetVehicleUsageQuery()
   const [drawerState, setDrawerState] = useState<{
     statId: OverviewStat['id']
     status: string
@@ -89,12 +79,10 @@ const {
               <div className="px-6 mt-4">
             <RevenueChart />
           </div>
-            {trendData && usageData && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 px-6 mt-4">
-            <VehicleUsageChart data={usageData} />
-            <TrendChart data={trendData} />
-          </div>
-        )}
+          <VehicleUsageChart />
+          <TrendChart />
+        </div>
         <div className="px-6 mt-4 mb-6">
         <RecentActivity />
       </div>

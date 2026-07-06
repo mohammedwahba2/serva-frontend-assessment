@@ -1,16 +1,12 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Card, Select, MenuItem } from '@mui/material'
-import { BarChart, Bar, XAxis, ResponsiveContainer, Tooltip } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import type { VehicleUsagePerformance } from '../../types'
+import type { BranchValue, PeriodValue } from '../../types'
+import { useGetVehicleUsageQuery } from '../../api/dashboardApi'
 import { UsageTooltip } from './UsageTooltip'
-
-interface VehicleUsageChartProps {
-  data: VehicleUsagePerformance
-  onPeriodChange?: (period: string) => void
-  onBranchChange?: (branch: string) => void
-}
+import { ChartSkeleton } from '../ChartSkeleton'
 
 const periodOptions = [
   { value: 'monthly', labelKey: 'usage.period.monthly' },
@@ -24,19 +20,20 @@ const branchOptions = [
   { value: 'jeddah', labelKey: 'revenue.branch.jeddah' },
 ] as const
 
-
-export function VehicleUsageChart({
-  data,
-  onPeriodChange,
-  onBranchChange,
-}: VehicleUsageChartProps) {
+export function VehicleUsageChart() {
   const { t, i18n } = useTranslation()
-  const [period, setPeriod] = useState<string>('monthly')
-  const [branch, setBranch] = useState<string>('all')
+  const [period, setPeriod] = useState<PeriodValue>('monthly')
+  const [branch, setBranch] = useState<BranchValue>('all')
 
-  const [visibleSegments, setVisibleSegments] = useState<Record<string, boolean>>(
-    () => Object.fromEntries(data.segments.map((s) => [s.key, true]))
-  )
+  const { data, isLoading } = useGetVehicleUsageQuery({ period, branch })
+
+  const [visibleSegments, setVisibleSegments] = useState<Record<string, boolean>>({})
+  const segmentsKey = data?.segments.map((s) => s.key).join(',') ?? ''
+  const [syncedSegmentsKey, setSyncedSegmentsKey] = useState('')
+  if (data && segmentsKey !== syncedSegmentsKey) {
+    setSyncedSegmentsKey(segmentsKey)
+    setVisibleSegments(Object.fromEntries(data.segments.map((s) => [s.key, true])))
+  }
 
   const toggleSegment = (key: string) => {
     setVisibleSegments((prev) => {
@@ -48,15 +45,13 @@ export function VehicleUsageChart({
     })
   }
 
-  const chartData = data.data.map((row) => ({ month: row.month, ...row.values }))
-
   const filterSx = {
-  fontSize: 14,
-  borderRadius: '6px',
-  bgcolor: '#FFFFFF',
-  '.MuiOutlinedInput-notchedOutline': { borderColor: '#E0DACF' },
-  '& .MuiSelect-select': { py: 0.7, px: 1.5 },
-}
+    fontSize: 14,
+    borderRadius: '6px',
+    bgcolor: '#FFFFFF',
+    '.MuiOutlinedInput-notchedOutline': { borderColor: '#E0DACF' },
+    '& .MuiSelect-select': { py: 0.7, px: 1.5 },
+  }
 
   const menuProps = {
     slotProps: {
@@ -67,6 +62,20 @@ export function VehicleUsageChart({
     },
   }
 
+  if (isLoading || !data) {
+    return <ChartSkeleton height={220} />
+  }
+
+  type UsageChartRow = { month: string; [segmentKey: string]: string | number }
+
+  const chartData: UsageChartRow[] = data.data.map((row) => ({ month: row.month, ...row.values }))
+
+  const maxValue = Math.max(
+    ...chartData.map((row) => data.segments.reduce((sum, s) => sum + (Number(row[s.key]) || 0), 0)),
+    1,
+  )
+  const yDomain: [number, number] = [0, Math.ceil(maxValue * 1.1)]
+
   return (
     <Card sx={{ borderRadius: '16px', bgcolor: '#F0EBE3', boxShadow: 'none', p: 3 }}>
       <div className="flex items-center justify-between mb-4">
@@ -75,7 +84,7 @@ export function VehicleUsageChart({
         <div className="flex items-center gap-2">
           <Select
             value={branch}
-            onChange={(e) => { setBranch(e.target.value); onBranchChange?.(e.target.value) }}
+            onChange={(e) => setBranch(e.target.value as BranchValue)}
             IconComponent={KeyboardArrowDownIcon}
             sx={filterSx}
             MenuProps={menuProps}
@@ -88,28 +97,24 @@ export function VehicleUsageChart({
             ))}
           </Select>
 
-
-
-  
-            <Select
-  
-              value={period}
-              onChange={(e) => { setPeriod(e.target.value); onPeriodChange?.(e.target.value) }}
-              IconComponent={KeyboardArrowDownIcon}
-              sx={filterSx}
-              MenuProps={menuProps}
-              renderValue={(value) =>
-                `${t('revenue.period.label')}: ${t(
-                  periodOptions.find((o) => o.value === value)?.labelKey ?? periodOptions[0].labelKey
-                )}`
-              }
-            >
-              {periodOptions.map((opt) => (
-                <MenuItem key={opt.value} value={opt.value}>
-                  {t(opt.labelKey)}
-                </MenuItem>
-              ))}
-            </Select>
+          <Select
+            value={period}
+            onChange={(e) => setPeriod(e.target.value as PeriodValue)}
+            IconComponent={KeyboardArrowDownIcon}
+            sx={filterSx}
+            MenuProps={menuProps}
+            renderValue={(value) =>
+              `${t('revenue.period.label')}: ${t(
+                periodOptions.find((o) => o.value === value)?.labelKey ?? periodOptions[0].labelKey,
+              )}`
+            }
+          >
+            {periodOptions.map((opt) => (
+              <MenuItem key={opt.value} value={opt.value}>
+                {t(opt.labelKey)}
+              </MenuItem>
+            ))}
+          </Select>
         </div>
       </div>
 
@@ -121,7 +126,7 @@ export function VehicleUsageChart({
               type="button"
               onClick={() => toggleSegment(seg.key)}
               className="flex items-center gap-1.5 text-xs cursor-pointer bg-transparent border-none p-0"
-              style={{ opacity: visibleSegments[seg.key] ? 1 : 0.4 }}
+              style={{ opacity: visibleSegments[seg.key] ? 1 : 0.4, transition: 'opacity 0.15s ease' }}
             >
               <span className="w-2 h-2 rounded-full" style={{ backgroundColor: seg.color }} />
               <span className="text-gray-600">{t(seg.labelKey)}</span>
@@ -139,14 +144,15 @@ export function VehicleUsageChart({
 
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={chartData} barCategoryGap="30%">
-        <XAxis
-          dataKey="month"
-          tickFormatter={(value) => t(value)}
-          tick={{ fontSize: 12, fill: '#9E9E9E' }}
-          axisLine={false}
-          tickLine={false}
-          interval={0}
-        />
+          <XAxis
+            dataKey="month"
+            tickFormatter={(value) => t(value)}
+            tick={{ fontSize: 12, fill: '#9E9E9E' }}
+            axisLine={false}
+            tickLine={false}
+            interval={0}
+          />
+          <YAxis hide domain={yDomain} />
           <Tooltip content={<UsageTooltip segments={data.segments} />} cursor={{ fill: 'rgba(0,0,0,0.03)' }} />
           {data.segments.map((seg) => (
             <Bar
@@ -156,6 +162,9 @@ export function VehicleUsageChart({
               hide={!visibleSegments[seg.key]}
               fill={seg.color}
               name={t(seg.labelKey)}
+              isAnimationActive
+              animationDuration={500}
+              animationEasing="ease-out"
             />
           ))}
         </BarChart>

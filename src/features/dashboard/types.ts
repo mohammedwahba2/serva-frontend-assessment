@@ -95,3 +95,8 @@ export interface ActivityItem {
   statusTone: 'success' | 'info' | 'warning' | 'danger' | 'neutral'
   timestamp: string
 }
+
+export interface PeriodBranchParams {
+  period: PeriodValue
+  branch: BranchValue
+}

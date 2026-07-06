@@ -2,6 +2,7 @@ import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
 import type {
   DrawerItem,
   OverviewStat,
+  PeriodBranchParams,
   RevenuePerformance,
   RevenueQueryParams,
   RidesContractsTrend,
@@ -11,10 +12,10 @@ import type {
 import {
   overviewStats,
   statItemsMock,
-  ridesContractsTrend,
-  vehicleUsage,
   recentActivity,
   getRevenuePerformance,
+  getRidesContractsTrend,
+  getVehicleUsage,
 } from '../mockData'
 
 export const dashboardApi = createApi({
@@ -39,16 +40,16 @@ export const dashboardApi = createApi({
         return { data: statItemsMock[statId] ?? [] }
       },
     }),
-    getRidesContractsTrend: builder.query<RidesContractsTrend, void>({
-      queryFn: async () => {
+    getRidesContractsTrend: builder.query<RidesContractsTrend, PeriodBranchParams>({
+      queryFn: async (params) => {
         await new Promise((resolve) => setTimeout(resolve, 300))
-        return { data: ridesContractsTrend }
+        return { data: getRidesContractsTrend(params) }
       },
     }),
-    getVehicleUsage: builder.query<VehicleUsagePerformance, void>({
-      queryFn: async () => {
+    getVehicleUsage: builder.query<VehicleUsagePerformance, PeriodBranchParams>({
+      queryFn: async (params) => {
         await new Promise((resolve) => setTimeout(resolve, 300))
-        return { data: vehicleUsage }
+        return { data: getVehicleUsage(params) }
       },
     }),
     getRecentActivity: builder.query<ActivityItem[], void>({
