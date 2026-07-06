@@ -1,3 +1,9 @@
 {
-  "welcome": "مرحبًا بعودتك، {{name}}"
+  "welcome": "مرحبًا بعودتك، {{name}}",
+  "language": "العربية",
+  "companySubtitle": "دي إس رنت لتأجير السيارات",
+  "defaultUserName": "محمد وهبة",
+  "settings": "الإعدادات",
+  "profile": "الملف الشخصي",
+  "logout": "تسجيل الخروج"
 }

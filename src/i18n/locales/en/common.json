@@ -1,3 +1,9 @@
 {
-  "welcome": "Welcome Back, {{name}}"
+  "welcome": "Welcome Back, {{name}}",
+  "language": "English",
+  "companySubtitle": "DS Rent Car Rental",
+  "defaultUserName": "Mohamed Wahba",
+  "settings": "Settings",
+  "profile": "Profile",
+  "logout": "Logout"
 }
